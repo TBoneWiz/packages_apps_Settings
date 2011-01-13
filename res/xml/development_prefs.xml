@@ -167,6 +167,17 @@
             android:title="@string/mobile_data_always_on"
             android:summary="@string/mobile_data_always_on_summary"/>
 
+        <com.android.settings.HostnamePreference
+            android:key="device_hostname"
+            android:title="@string/device_hostname"
+            android:dialogTitle="@string/device_hostname"
+            android:positiveButtonText="@string/menu_save"
+            android:negativeButtonText="@string/menu_cancel"
+            android:selectAllOnFocus="true"
+            android:imeOptions="actionDone"
+            android:inputType="textNoSuggestions"
+            android:persistent="false" />
+
         <ListPreference
             android:key="select_usb_configuration"
             android:title="@string/select_usb_configuration_title"
