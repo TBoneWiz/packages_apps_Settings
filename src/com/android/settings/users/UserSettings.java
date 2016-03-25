@@ -217,7 +217,7 @@ public class UserSettings extends SettingsPreferenceFragment
         }
         mAddUser = findPreference(KEY_ADD_USER);
         // Determine if add user/profile button should be visible
-        if (mUserCaps.mCanAddUser) {
+        if (mUserCaps.mCanAddUser && Utils.isDeviceProvisioned(getActivity())) {
             mAddUser.setOnPreferenceClickListener(this);
             // change label to only mention user, if restricted profiles are not supported
             if (!mUserCaps.mCanAddRestrictedProfile) {
@@ -231,7 +231,7 @@ public class UserSettings extends SettingsPreferenceFragment
         context.registerReceiverAsUser(mUserChangeReceiver, UserHandle.ALL, filter, null,
                 mHandler);
 
-        if (Global.getInt(getContext().getContentResolver(), Global.DEVICE_PROVISIONED, 0) == 0) {
+        if (!Utils.isDeviceProvisioned(getActivity())) {
             getActivity().finish();
             return;
         }
@@ -822,7 +822,7 @@ public class UserSettings extends SettingsPreferenceFragment
         }
 
         // Append Add user to the end of the list
-        if (mUserCaps.mCanAddUser) {
+        if (mUserCaps.mCanAddUser && Utils.isDeviceProvisioned(getActivity())) {
             boolean moreUsers = mUserManager.canAddMoreUsers();
             mAddUser.setOrder(Preference.DEFAULT_ORDER);
             preferenceScreen.addPreference(mAddUser);

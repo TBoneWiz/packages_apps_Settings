@@ -47,7 +47,6 @@ import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
-import android.provider.Settings.Global;
 import android.text.TextUtils;
 import android.transition.TransitionManager;
 import android.util.ArrayMap;
@@ -640,8 +639,8 @@ public class SettingsActivity extends Activity
             } else {
                 // No UP affordance if we are displaying the main Dashboard
                 mDisplayHomeAsUpEnabled = false;
-                // Show Search affordance
-                mDisplaySearch = true;
+                // Show Search affordance (if device is provisioned)
+                mDisplaySearch = Utils.isDeviceProvisioned(this);
                 mInitialTitleResId = R.string.dashboard_title;
                 switchToFragment(DashboardSummary.class.getName(), null, false, false,
                         mInitialTitleResId, mInitialTitle, false);
@@ -1344,7 +1343,7 @@ public class SettingsActivity extends Activity
     }
 
     private void addExternalTiles(List<DashboardCategory> target) {
-        if (Global.getInt(getContentResolver(), Global.DEVICE_PROVISIONED, 0) == 0) {
+        if (!Utils.isDeviceProvisioned(this)) {
             // Don't add external tiles until device is set up.
             return;
         }

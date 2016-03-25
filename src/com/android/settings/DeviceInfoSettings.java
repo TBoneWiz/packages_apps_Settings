@@ -216,8 +216,7 @@ public class DeviceInfoSettings extends SettingsPreferenceFragment implements In
             if (UserHandle.myUserId() != UserHandle.USER_OWNER) return true;
 
             // Don't enable developer options until device has been provisioned
-            if (Settings.Global.getInt(getActivity().getContentResolver(),
-                    Settings.Global.DEVICE_PROVISIONED, 0) == 0) {
+            if (!Utils.isDeviceProvisioned(getActivity())) {
                 return true;
             }
 

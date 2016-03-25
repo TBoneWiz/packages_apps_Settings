@@ -323,8 +323,7 @@ public class DevelopmentSettings extends SettingsPreferenceFragment
 
         if (android.os.Process.myUserHandle().getIdentifier() != UserHandle.USER_OWNER
                 || mUm.hasUserRestriction(UserManager.DISALLOW_DEBUGGING_FEATURES)
-                || Settings.Global.getInt(getActivity().getContentResolver(),
-                        Settings.Global.DEVICE_PROVISIONED, 0) == 0) {
+                || !Utils.isDeviceProvisioned(getActivity())) {
             // Block access to developer options if the user is not the owner, if user policy
             // restricts it, or if the device has not been provisioned
             mUnavailable = true;
