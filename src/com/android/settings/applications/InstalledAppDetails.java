@@ -627,6 +627,7 @@ public class InstalledAppDetails extends AppInfoBase
     }
 
     private void uninstallPkg(String packageName, boolean allUsers, boolean andDisable) {
+        stopListeningToPackageRemove();
          // Create new intent to launch Uninstaller activity
         Uri packageURI = Uri.parse("package:"+packageName);
         Intent uninstallIntent = new Intent(Intent.ACTION_UNINSTALL_PACKAGE, packageURI);
@@ -682,7 +683,7 @@ public class InstalledAppDetails extends AppInfoBase
         intent.putExtra(Intent.EXTRA_PACKAGE_NAME, mAppEntry.info.packageName);
         intent.putExtra(AppInfoWithHeader.EXTRA_HIDE_INFO_BUTTON, true);
         try {
-            startActivity(intent);
+            getActivity().startActivityForResult(intent, SUB_INFO_FRAGMENT);
         } catch (ActivityNotFoundException e) {
             Log.w(LOG_TAG, "No app can handle android.intent.action.MANAGE_APP_PERMISSIONS");
         }
@@ -711,6 +712,7 @@ public class InstalledAppDetails extends AppInfoBase
         String packageName = mAppEntry.info.packageName;
         if(v == mUninstallButton) {
             if ((mAppEntry.info.flags & ApplicationInfo.FLAG_SYSTEM) != 0) {
+                stopListeningToPackageRemove();
                 if (mAppEntry.info.enabled && !isDisabledUntilUsed()) {
                     if (mUpdatedSysApp) {
                         showDialogInner(DLG_SPECIAL_DISABLE, 0);
@@ -840,6 +842,12 @@ public class InstalledAppDetails extends AppInfoBase
             default:
                 return context.getString(R.string.notifications_enabled);
         }
+    }
+
+    @Override
+    protected void onPackageRemoved() {
+        getActivity().finishActivity(SUB_INFO_FRAGMENT);
+        super.onPackageRemoved();
     }
 
     private class MemoryUpdater extends AsyncTask<Void, Void, ProcStatsPackageEntry> {
