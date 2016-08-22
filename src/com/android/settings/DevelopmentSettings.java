@@ -432,7 +432,6 @@ public class DevelopmentSettings extends SettingsPreferenceFragment
         Preference hdcpChecking = findPreference(HDCP_CHECKING_KEY);
         if (hdcpChecking != null) {
             mAllPrefs.add(hdcpChecking);
-            removePreferenceForProduction(hdcpChecking);
         }
 
         mColorModePreference = (ColorModePreference) findPreference(KEY_COLOR_MODE);
@@ -524,14 +523,6 @@ public class DevelopmentSettings extends SettingsPreferenceFragment
         }
 
         mSwitchBar.addOnSwitchChangeListener(this);
-    }
-
-    private boolean removePreferenceForProduction(Preference preference) {
-        if ("user".equals(Build.TYPE)) {
-            removePreference(preference);
-            return true;
-        }
-        return false;
     }
 
     private void removePreference(Preference preference) {
@@ -960,7 +951,7 @@ public class DevelopmentSettings extends SettingsPreferenceFragment
     }
 
     private static boolean showEnableMultiWindowPreference() {
-        return !"user".equals(Build.TYPE);
+        return true;
     }
 
     private void setEnableMultiWindow(boolean value) {
