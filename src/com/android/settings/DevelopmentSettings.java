@@ -149,6 +149,7 @@ public class DevelopmentSettings extends SettingsPreferenceFragment
     private static final String OVERLAY_DISPLAY_DEVICES_KEY = "overlay_display_devices";
     private static final String ENABLE_MULTI_WINDOW_KEY = "enable_multi_window";
     private static final String DEBUG_DEBUGGING_CATEGORY_KEY = "debug_debugging_category";
+    private static final String DEBUG_NET_CATEGORY_KEY = "debug_networking_category";
     private static final String SELECT_LOGD_SIZE_KEY = "select_logd_size";
     private static final String SELECT_LOGD_SIZE_PROPERTY = "persist.logd.size";
     private static final String SELECT_LOGD_DEFAULT_SIZE_PROPERTY = "ro.logd.size";
@@ -322,6 +323,8 @@ public class DevelopmentSettings extends SettingsPreferenceFragment
 
         final PreferenceGroup debugDebuggingCategory = (PreferenceGroup)
                 findPreference(DEBUG_DEBUGGING_CATEGORY_KEY);
+        final PreferenceGroup debugNetCategory = (PreferenceGroup)
+                findPreference(DEBUG_NET_CATEGORY_KEY);
         mEnableAdb = findAndInitSwitchPref(ENABLE_ADB);
         mClearAdbKeys = findPreference(CLEAR_ADB_KEYS);
         if (!SystemProperties.getBoolean("ro.adb.secure", false)) {
@@ -396,7 +399,12 @@ public class DevelopmentSettings extends SettingsPreferenceFragment
         mMobileDataAlwaysOn = findAndInitSwitchPref(MOBILE_DATA_ALWAYS_ON);
         mLogdSize = addListPreference(SELECT_LOGD_SIZE_KEY);
         mUsbConfiguration = addListPreference(USB_CONFIGURATION_KEY);
-
+        if (Utils.isWifiOnly(getActivity())) {
+            debugNetCategory.removePreference(mWifiAggressiveHandover);
+            debugNetCategory.removePreference(mMobileDataAlwaysOn);
+            mWifiAggressiveHandover = null;
+            mMobileDataAlwaysOn = null;
+        }
         mWindowAnimationScale = addListPreference(WINDOW_ANIMATION_SCALE_KEY);
         mTransitionAnimationScale = addListPreference(TRANSITION_ANIMATION_SCALE_KEY);
         mAnimatorDurationScale = addListPreference(ANIMATOR_DURATION_SCALE_KEY);
@@ -683,10 +691,14 @@ public class DevelopmentSettings extends SettingsPreferenceFragment
         updateLogdSizeValues();
         updateWifiDisplayCertificationOptions();
         updateWifiVerboseLoggingOptions();
-        updateWifiAggressiveHandoverOptions();
+        if (mWifiAggressiveHandover != null) {
+            updateWifiAggressiveHandoverOptions();
+        }
         updateWifiAllowScansWithTrafficOptions();
         updateLegacyDhcpClientOptions();
-        updateMobileDataAlwaysOnOptions();
+        if (mMobileDataAlwaysOn != null) {
+            updateMobileDataAlwaysOnOptions();
+        }
         updateSimulateColorSpace();
         updateUSBAudioOptions();
         updateRootAccessOptions();
