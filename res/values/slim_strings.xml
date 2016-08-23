@@ -285,4 +285,36 @@
     <string name="wifi_countrycode_br">Brazil</string>
     <string name="wifi_countrycode_in">India</string>
 
+   <!-- Ethernet settings -->
+
+   <!-- Ethernet settings check box title on Main Settings screen -->
+   <string name="ethernet_quick_toggle_title">Ethernet connection</string>
+   <!--Used as title on second screen after selecting Ethernet settings -->
+   <string name="ethernet_settings">Ethernet</string>
+
+   <!--Wireless controls screen, settings title for the item to take you to the ethernet settings screen -->
+   <string name="ethernet_settings_title">Ethernet</string>
+   <!-- ethernet ip address  -->
+   <string name="ethernet_ip_addr">IP address</string>
+   <!-- ethernet mac -->
+   <string name="ethernet_mac">MAC address</string>
+
+   <string name="ethernet">Ethernet</string>
+   <string name="ethernet_ip_settings_invalid_ip">Please type a valid IP address</string>
+   <string name="ethernet_use_static_ip">Use static IP</string>
+   <string name="ethernet_static_ip_address">IP address</string>
+   <string name="ethernet_static_ip_mask">Netmask (bits)</string>
+   <string name="ethernet_static_dns1">DNS 1</string>
+   <string name="ethernet_static_dns2">DNS 2</string>
+   <string name="ethernet_static_gateway">Gateway</string>
+   <string name="ethernet_static_netmask">Netmask</string>
+   <string name="ethernet_static_ip_settings_title">Static IP Setttings</string>
+   <string name="category_ethernet">Static IP Setttings</string>
+   <string name="staticip_save">Save</string>
+   <string name="staticip_cancel">Cancel</string>
+   <string name="default_static_ip">192.168.1.128</string>
+   <string name="default_static_gateway">192.168.1.1</string>
+   <string name="default_static_dns1">8.8.8.8</string>
+   <string name="default_static_dns2">8.8.4.4</string>
+
 </resources>
