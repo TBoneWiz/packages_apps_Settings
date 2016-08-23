@@ -261,4 +261,8 @@
     <string name="privacy_guard_enable_title">Enable Privacy Guard Manager</string>
     <string name="privacy_guard_enable_summary">Show Privacy Guard Manager in Security Settings.</string>
 
+    <!-- Captive Portal -->
+    <string name="captive_portal_detection">Captive portal detection</string>
+    <string name="captive_portal_detection_summary">On by default - disable to remove Google server connectivity checks</string>
+
 </resources>
