@@ -343,7 +343,7 @@ public class DevelopmentSettings extends SettingsPreferenceFragment
         mBugreportInPower = findAndInitSwitchPref(BUGREPORT_IN_POWER_KEY);
         if ("user".equals(Build.TYPE)) {
             removePreference(mBugreport);
-            removePreference(mBugreportInPower);
+            debugDebuggingCategory.removePreference(mBugreportInPower);
             mBugreport = null;
             mBugreportInPower = null;
         }
