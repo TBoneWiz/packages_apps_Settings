@@ -50,7 +50,4 @@
     <!-- When true enable color temperature setting. -->
     <bool name="config_enableColorTemperature">false</bool>
 
-    <!-- When true hide WiFi region code. -->
-    <bool name="config_hide_wifi_region_code">false</bool>
-
 </resources>
