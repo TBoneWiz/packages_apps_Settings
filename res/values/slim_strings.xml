@@ -265,4 +265,24 @@
     <string name="captive_portal_detection">Captive portal detection</string>
     <string name="captive_portal_detection_summary">On by default - disable to remove Google server connectivity checks</string>
 
+    <!-- Wi-Fi region code -->
+    <string name="wifi_setting_countrycode_title">Wi\u2011Fi region code</string>
+    <!-- Wi-Fi settings screen, setting summary for setting the wifi frequency band [CHAR LIMIT=50]-->
+    <string name="wifi_setting_countrycode_summary">Specify the region code for Wi\u2011Fi</string>
+    <!-- Wi-Fi settings screen, error message when the frequency band could not be set [CHAR LIMIT=50]. -->
+    <string name="wifi_setting_countrycode_error">There was a problem setting the region code.</string>
+
+    <string name="wifi_countrycode_us">United States</string>
+    <string name="wifi_countrycode_ca">Canada, Taiwan</string>
+    <string name="wifi_countrycode_de">Germany</string>
+    <string name="wifi_countrycode_gb">Europe</string>
+    <string name="wifi_countrycode_jp">Japan, Russia</string>
+    <string name="wifi_countrycode_au">Australia</string>
+    <string name="wifi_countrycode_cn">China</string>
+    <string name="wifi_countrycode_kr">Korea</string>
+    <string name="wifi_countrycode_tr">South Africa, Turkey</string>
+    <string name="wifi_countrycode_sg">Israel, Singapore</string>
+    <string name="wifi_countrycode_br">Brazil</string>
+    <string name="wifi_countrycode_in">India</string>
+
 </resources>
