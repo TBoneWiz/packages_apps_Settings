@@ -317,4 +317,7 @@
    <string name="default_static_dns1">8.8.8.8</string>
    <string name="default_static_dns2">8.8.4.4</string>
 
+    <!-- SuperSU -->
+    <string name="supersu_title">SuperSU</string>
+
 </resources>
