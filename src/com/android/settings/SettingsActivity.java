@@ -1318,7 +1318,13 @@ public class SettingsActivity extends Activity
                         removeTile = true;
                     }
                 } else if (id == R.id.superuser_settings) {
-                    if (SystemProperties.getInt(ROOT_ACCESS_PROPERTY, 0) == 0) {
+                    // Hide Superuser if SuperSU is installed
+                    boolean supported = false;
+                    try {
+                        supported = (getPackageManager().getPackageInfo("eu.chainfire.supersu", 0).versionCode >= 185);
+                    } catch (PackageManager.NameNotFoundException e) {
+                    }
+                    if ((SystemProperties.getInt(ROOT_ACCESS_PROPERTY, 0) == 0) || supported) {
                         removeTile = true;
                     }
                 }
