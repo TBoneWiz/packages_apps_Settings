@@ -323,4 +323,9 @@
     <!-- Hostname setting -->
     <string name="device_hostname">Device hostname</string>
 
+    <!-- ADB root access -->
+    <string name="adb_root_access_title">ADB root access</string>
+    <string name="adb_root_disabled">ADB root access disabled</string>
+    <string name="adb_root_enabled">ADB root access enabled</string>
+
 </resources>

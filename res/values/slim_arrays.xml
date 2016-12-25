@@ -242,8 +242,8 @@
     </string-array>
 
     <string-array name="root_access_entries_adb" translatable="false">
-        <item>@string/root_access_none</item>
-        <item>@string/root_access_adb</item>
+        <item>@string/adb_root_disabled</item>
+        <item>@string/adb_root_enabled</item>
     </string-array>
 
     <string-array name="root_access_values_adb" translatable="false">

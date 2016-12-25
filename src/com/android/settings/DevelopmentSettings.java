@@ -170,6 +170,7 @@ public class DevelopmentSettings extends SettingsPreferenceFragment
     private static final String OPENGL_TRACES_KEY = "enable_opengl_traces";
 
     private static final String ROOT_ACCESS_KEY = "root_access";
+    private static final String ADB_ROOT_ACCESS_KEY = "adb_root_access";
     private static final String ROOT_ACCESS_PROPERTY = "persist.sys.root_access";
 
     private static final String IMMEDIATELY_DESTROY_ACTIVITIES_KEY
@@ -273,6 +274,7 @@ public class DevelopmentSettings extends SettingsPreferenceFragment
 
     private ColorModePreference mColorModePreference;
     private ListPreference mRootAccess;
+    private ListPreference mAdbRootAccess;
     private Object mSelectedRootValue;
 
     private SwitchPreference mColorTemperaturePreference;
@@ -457,11 +459,12 @@ public class DevelopmentSettings extends SettingsPreferenceFragment
         if (mColorModePreference.getTransformsCount() < 2) {
             removePreference(KEY_COLOR_MODE);
             mColorModePreference = null;
-	}
+        }
 
         mRootAccess = (ListPreference) findPreference(ROOT_ACCESS_KEY);
-        mRootAccess.setOnPreferenceChangeListener(this);
+        mAdbRootAccess = (ListPreference) findPreference(ADB_ROOT_ACCESS_KEY);
         if (!removeRootOptionsIfRequired()) {
+            mRootAccess.setOnPreferenceChangeListener(this);
             if (isRootForAppsAvailable()) {
                 mRootAccess.setEntries(R.array.root_access_entries);
                 mRootAccess.setEntryValues(R.array.root_access_values);
@@ -470,6 +473,11 @@ public class DevelopmentSettings extends SettingsPreferenceFragment
                 mRootAccess.setEntryValues(R.array.root_access_values_adb);
             }
             mAllPrefs.add(mRootAccess);
+        } else if (isRootForAppsAvailable() && removeRootOptionsIfRequired()) {
+            mAdbRootAccess.setOnPreferenceChangeListener(this);
+            mAdbRootAccess.setEntries(R.array.root_access_entries_adb);
+            mAdbRootAccess.setEntryValues(R.array.root_access_values_adb);
+            mAllPrefs.add(mAdbRootAccess);
         }
 
         mColorTemperaturePreference = (SwitchPreference) findPreference(COLOR_TEMPERATURE_KEY);
@@ -525,13 +533,24 @@ public class DevelopmentSettings extends SettingsPreferenceFragment
 
     private boolean removeRootOptionsIfRequired() {
         // user builds don't get root, and eng always gets root
-        if (!(Build.IS_DEBUGGABLE || "eng".equals(Build.TYPE))) {
+        // also remove root options if SuperSU is installed
+        boolean supersu = false;
+        try {
+            supersu = (getActivity().getPackageManager().getPackageInfo("eu.chainfire.supersu", 0).versionCode >= 185);
+        } catch (PackageManager.NameNotFoundException e) {
+        }
+        if (!(Build.IS_DEBUGGABLE || "eng".equals(Build.TYPE)) || supersu) {
             if (mRootAccess != null) {
                 getPreferenceScreen().removePreference(mRootAccess);
                 return true;
             }
+        } else if (Build.IS_DEBUGGABLE || "eng".equals(Build.TYPE)) {
+            PreferenceGroup debugDebuggingCategory = (PreferenceGroup)
+                    findPreference(DEBUG_DEBUGGING_CATEGORY_KEY);
+            if (mAdbRootAccess != null && debugDebuggingCategory != null) {
+                debugDebuggingCategory.removePreference(mAdbRootAccess);
+            }
         }
-
         return false;
     }
 
@@ -722,7 +741,11 @@ public class DevelopmentSettings extends SettingsPreferenceFragment
         }
         updateSimulateColorSpace();
         updateUSBAudioOptions();
-        updateRootAccessOptions();
+        if (mAdbRootAccess != null) {
+            updateAdbRootAccessOptions();
+        } else {
+            updateRootAccessOptions();
+        }
         if (mColorTemperaturePreference != null) {
             updateColorTemperature();
         }
@@ -758,8 +781,30 @@ public class DevelopmentSettings extends SettingsPreferenceFragment
    private void updateRootAccessOptions() {
         String value = SystemProperties.get(ROOT_ACCESS_PROPERTY, "0");
         mRootAccess.setValue(value);
-        mRootAccess.setSummary(getResources()
-                .getStringArray(R.array.root_access_entries)[Integer.valueOf(value)]);
+        if (isRootForAppsAvailable()) {
+            mRootAccess.setSummary(getResources()
+                    .getStringArray(R.array.root_access_entries)[Integer.valueOf(value)]);
+        } else {
+            if (value.contains("0")) {
+                mRootAccess.setSummary(getResources()
+                        .getStringArray(R.array.root_access_entries_adb)[Integer.valueOf(value)]);
+            } else {
+                mRootAccess.setSummary(getResources()
+                        .getStringArray(R.array.root_access_entries_adb)[Integer.valueOf(value) - 1]);
+            }
+        }
+    }
+
+   private void updateAdbRootAccessOptions() {
+        String value = SystemProperties.get(ROOT_ACCESS_PROPERTY, "0");
+        mAdbRootAccess.setValue(value);
+        if (value.contains("0")) {
+            mAdbRootAccess.setSummary(getResources()
+                    .getStringArray(R.array.root_access_entries_adb)[Integer.valueOf(value)]);
+        } else {
+            mAdbRootAccess.setSummary(getResources()
+                    .getStringArray(R.array.root_access_entries_adb)[Integer.valueOf(value) - 1]);
+        }
     }
 
     private boolean isRootForAppsAvailable() {
@@ -791,7 +836,11 @@ public class DevelopmentSettings extends SettingsPreferenceFragment
             Settings.Secure.putInt(getActivity().getContentResolver(),
                     Settings.Secure.ADB_ENABLED, 1);
         }
-        updateRootAccessOptions();
+        if (mAdbRootAccess != null) {
+            updateAdbRootAccessOptions();
+        } else {
+            updateRootAccessOptions();
+        }
     }
 
     private void resetRootAccessOptions() {
@@ -804,7 +853,11 @@ public class DevelopmentSettings extends SettingsPreferenceFragment
             Settings.Secure.putInt(getActivity().getContentResolver(),
                     Settings.Secure.ADB_ENABLED, 1);
         }
-        updateRootAccessOptions();
+        if (mAdbRootAccess != null) {
+            updateAdbRootAccessOptions();
+        } else {
+            updateRootAccessOptions();
+        }
     }
 
     private void updateHdcpValues() {
@@ -1951,7 +2004,7 @@ public class DevelopmentSettings extends SettingsPreferenceFragment
         } else if (preference == mSimulateColorSpace) {
             writeSimulateColorSpace(newValue);
             return true;
-        } else if (preference == mRootAccess) {
+        } else if (preference == mRootAccess || preference == mAdbRootAccess) {
             if ("0".equals(SystemProperties.get(ROOT_ACCESS_PROPERTY, "0"))
                     && !"0".equals(newValue)) {
                 mSelectedRootValue = newValue;
@@ -2056,7 +2109,11 @@ public class DevelopmentSettings extends SettingsPreferenceFragment
             }
             mEnableDialog = null;
         } else if (dialog == mRootDialog) {
-            updateRootAccessOptions();
+            if (mAdbRootAccess != null) {
+                updateAdbRootAccessOptions();
+            } else {
+                updateRootAccessOptions();
+            }
             mRootDialog = null;
         }
     }
