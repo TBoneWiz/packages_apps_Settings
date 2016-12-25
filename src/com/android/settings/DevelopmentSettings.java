@@ -473,11 +473,13 @@ public class DevelopmentSettings extends SettingsPreferenceFragment
                 mRootAccess.setEntryValues(R.array.root_access_values_adb);
             }
             mAllPrefs.add(mRootAccess);
+            mAdbRootAccess = null;
         } else if (isRootForAppsAvailable() && removeRootOptionsIfRequired()) {
             mAdbRootAccess.setOnPreferenceChangeListener(this);
             mAdbRootAccess.setEntries(R.array.root_access_entries_adb);
             mAdbRootAccess.setEntryValues(R.array.root_access_values_adb);
             mAllPrefs.add(mAdbRootAccess);
+            mRootAccess = null;
         }
 
         mColorTemperaturePreference = (SwitchPreference) findPreference(COLOR_TEMPERATURE_KEY);
@@ -743,7 +745,8 @@ public class DevelopmentSettings extends SettingsPreferenceFragment
         updateUSBAudioOptions();
         if (mAdbRootAccess != null) {
             updateAdbRootAccessOptions();
-        } else {
+        }
+        if (mRootAccess != null) {
             updateRootAccessOptions();
         }
         if (mColorTemperaturePreference != null) {
@@ -838,7 +841,7 @@ public class DevelopmentSettings extends SettingsPreferenceFragment
         }
         if (mAdbRootAccess != null) {
             updateAdbRootAccessOptions();
-        } else {
+        } else if (mRootAccess != null) {
             updateRootAccessOptions();
         }
     }
@@ -855,7 +858,7 @@ public class DevelopmentSettings extends SettingsPreferenceFragment
         }
         if (mAdbRootAccess != null) {
             updateAdbRootAccessOptions();
-        } else {
+        } else if (mRootAccess != null) {
             updateRootAccessOptions();
         }
     }
@@ -2004,7 +2007,7 @@ public class DevelopmentSettings extends SettingsPreferenceFragment
         } else if (preference == mSimulateColorSpace) {
             writeSimulateColorSpace(newValue);
             return true;
-        } else if (preference == mRootAccess || preference == mAdbRootAccess) {
+        } else if (preference == mRootAccess) {
             if ("0".equals(SystemProperties.get(ROOT_ACCESS_PROPERTY, "0"))
                     && !"0".equals(newValue)) {
                 mSelectedRootValue = newValue;
@@ -2014,6 +2017,24 @@ public class DevelopmentSettings extends SettingsPreferenceFragment
                 }
                 mRootDialog = new AlertDialog.Builder(getActivity())
                         .setMessage(getResources().getString(R.string.root_access_warning_message))
+                        .setTitle(R.string.root_access_warning_title)
+                        .setPositiveButton(android.R.string.yes, this)
+                        .setNegativeButton(android.R.string.no, this).show();
+                mRootDialog.setOnDismissListener(this);
+            } else {
+                writeRootAccessOptions(newValue);
+            }
+            return true;
+        } else if (preference == mAdbRootAccess) {
+            if ("0".equals(SystemProperties.get(ROOT_ACCESS_PROPERTY, "0"))
+                    && !"0".equals(newValue)) {
+                mSelectedRootValue = newValue;
+                mDialogClicked = false;
+                if (mRootDialog != null) {
+                    dismissDialogs();
+                }
+                mRootDialog = new AlertDialog.Builder(getActivity())
+                        .setMessage(getResources().getString(R.string.adb_root_access_warning_message))
                         .setTitle(R.string.root_access_warning_title)
                         .setPositiveButton(android.R.string.yes, this)
                         .setNegativeButton(android.R.string.no, this).show();
