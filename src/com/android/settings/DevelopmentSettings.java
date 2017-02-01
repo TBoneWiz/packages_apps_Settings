@@ -201,6 +201,7 @@ public class DevelopmentSettings extends SettingsPreferenceFragment
     private static final String MULTI_WINDOW_SYSTEM_PROPERTY = "persist.sys.debug.multi_window";
 
     private static final String SUPERUSER_BINARY_PATH = "/system/xbin/su";
+    private static final String SUPERSU_BINARY_PATH = "/su/bin/su";
 
     private IWindowManager mWindowManager;
     private IBackupManager mBackupManager;
@@ -480,6 +481,9 @@ public class DevelopmentSettings extends SettingsPreferenceFragment
             mAdbRootAccess.setEntryValues(R.array.root_access_values_adb);
             mAllPrefs.add(mAdbRootAccess);
             mRootAccess = null;
+        } else if (mAdbRootAccess != null && debugDebuggingCategory != null) {
+            debugDebuggingCategory.removePreference(mAdbRootAccess);
+            mAdbRootAccess = null;
         }
 
         mColorTemperaturePreference = (SwitchPreference) findPreference(COLOR_TEMPERATURE_KEY);
@@ -817,6 +821,14 @@ public class DevelopmentSettings extends SettingsPreferenceFragment
             exists = f.exists();
         } catch (SecurityException e) {
             // Ignore
+        }
+        if (!exists) {
+            try {
+                File g = new File(SUPERSU_BINARY_PATH);
+                exists = g.exists();
+            } catch (SecurityException e) {
+                // Ignore
+            }
         }
         return exists;
     }
