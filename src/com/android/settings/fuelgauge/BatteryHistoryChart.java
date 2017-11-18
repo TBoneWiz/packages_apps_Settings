@@ -514,6 +514,8 @@ public class BatteryHistoryChart extends View {
         String batteryPercentString = Utils.formatPercentage(mBatteryLevel);
         long remainingTimeUs = 0;
         mDischarging = true;
+        final String statusLabel = com.android.settings.Utils.getBatteryStatus(getResources(),
+                mBatteryBroadcast);
         if (mBatteryBroadcast.getIntExtra(BatteryManager.EXTRA_PLUGGED, 0) == 0) {
             final long drainTime = mStats.computeBatteryTimeRemaining(elapsedRealtimeUs);
             if (drainTime > 0) {
@@ -522,13 +524,13 @@ public class BatteryHistoryChart extends View {
                         drainTime / 1000);
                 mChargeLabelString = getContext().getResources().getString(
                         R.string.power_discharging_duration, batteryPercentString, timeString);
+            } else if (statusLabel != null) {
+                mChargeLabelString = batteryPercentString.concat(" - ").concat(statusLabel);
             } else {
                 mChargeLabelString = batteryPercentString;
             }
         } else {
             final long chargeTime = mStats.computeChargeTimeRemaining(elapsedRealtimeUs);
-            final String statusLabel = com.android.settings.Utils.getBatteryStatus(getResources(),
-                    mBatteryBroadcast);
             final int status = mBatteryBroadcast.getIntExtra(BatteryManager.EXTRA_STATUS,
                     BatteryManager.BATTERY_STATUS_UNKNOWN);
             if (chargeTime > 0 && status != BatteryManager.BATTERY_STATUS_FULL) {

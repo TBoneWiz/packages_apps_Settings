@@ -175,7 +175,7 @@
     <!-- [CHAR_LIMIT=20] Battery use screen.  Battery status shown in chart label when charging over a wireless connection.  -->
     <string name="battery_info_status_charging_wireless">Charging wirelessly</string>
     <!-- Battery Info screen. Value for a status item.  Used for diagnostic info screens, precise translation isn't needed -->
-    <string name="battery_info_status_discharging">Not charging</string>
+    <string name="battery_info_status_discharging">Discharging</string>
     <!-- Battery Info screen. Value for a status item.  Used for diagnostic info screens, precise translation isn't needed -->
     <string name="battery_info_status_not_charging">Not charging</string>
     <!-- Battery Info screen. Value for a status item.  Used for diagnostic info screens, precise translation isn't needed -->
