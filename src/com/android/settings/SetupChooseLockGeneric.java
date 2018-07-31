@@ -100,6 +100,12 @@ public class SetupChooseLockGeneric extends ChooseLockGeneric {
             // activity will be resumed to foreground.
         }
 
+
+        @Override
+        protected boolean canRunBeforeDeviceProvisioned() {
+            return true;
+        }
+
         /***
          * Disables preferences that are less secure than required quality and shows only secure
          * screen lock options here.
