@@ -203,6 +203,9 @@ public class DevelopmentSettings extends SettingsPreferenceFragment
     private static final String SUPERUSER_BINARY_PATH = "/system/xbin/su";
     private static final String SUPERSU_BINARY_PATH = "/su/bin/su";
 
+    private static final String BTA_ENCODER_PREF_KEY = "bta_codec_preference_configuration";
+    private static final String BTA_ENCODER_PROP = "persist.sys.bt.preferred_codec";
+
     private IWindowManager mWindowManager;
     private IBackupManager mBackupManager;
     private DevicePolicyManager mDpm;
@@ -255,6 +258,7 @@ public class DevelopmentSettings extends SettingsPreferenceFragment
     private SwitchPreference mForceRtlLayout;
     private ListPreference mDebugHwOverdraw;
     private ListPreference mLogdSize;
+    private ListPreference mBtaConfiguration;
     private ListPreference mUsbConfiguration;
     private ListPreference mTrackFrameTime;
     private ListPreference mShowNonRectClip;
@@ -412,6 +416,7 @@ public class DevelopmentSettings extends SettingsPreferenceFragment
         mMobileDataAlwaysOn = findAndInitSwitchPref(MOBILE_DATA_ALWAYS_ON);
         mLogdSize = addListPreference(SELECT_LOGD_SIZE_KEY);
         mUsbConfiguration = addListPreference(USB_CONFIGURATION_KEY);
+        mBtaConfiguration = addListPreference(BTA_ENCODER_PREF_KEY);
         if (Utils.isWifiOnly(getActivity())) {
             debugNetCategory.removePreference(mWifiAggressiveHandover);
             debugNetCategory.removePreference(mMobileDataAlwaysOn);
@@ -756,7 +761,8 @@ public class DevelopmentSettings extends SettingsPreferenceFragment
         if (mColorTemperaturePreference != null) {
             updateColorTemperature();
         }
-    }
+        updateBtaConfigurationValues(); 
+   }
 
     private void resetDangerousOptions() {
         mDontPokeProperties = true;
@@ -1572,6 +1578,34 @@ public class DevelopmentSettings extends SettingsPreferenceFragment
         }
     }
 
+    private void updateBtaConfigurationValues() {
+        if (mBtaConfiguration != null) {
+            String currentValue = SystemProperties.get(BTA_ENCODER_PROP);
+
+            String[] values = getResources().getStringArray(R.array.select_bta_codec_values);
+            String[] titles = getResources().getStringArray(R.array.select_bta_codec_titles);
+            int index = 0;
+            for (int i = 0; i < titles.length; i++) {
+                if (currentValue.equals(values[i])) {
+                    index = i;
+                    break;
+                }
+            }
+            mBtaConfiguration.setValue(values[index]);
+            mBtaConfiguration.setSummary(titles[index]);
+            mBtaConfiguration.setOnPreferenceChangeListener(this);
+        }
+    }
+
+    private void writeBtaConfigurationOption(Object newValue) {
+        String currentValue = SystemProperties.get(BTA_ENCODER_PROP);
+        final String value = (newValue != null) ?
+                newValue.toString() : "0";
+        SystemProperties.set(BTA_ENCODER_PROP, value);
+        pokeSystemProperties();
+        updateBtaConfigurationValues();
+    }
+
     private void updateCpuUsageOptions() {
         updateSwitchPreference(mShowCpuUsage,
                 Settings.Global.getInt(getActivity().getContentResolver(),
@@ -1988,6 +2022,9 @@ public class DevelopmentSettings extends SettingsPreferenceFragment
             return true;
         } else if (preference == mUsbConfiguration) {
             writeUsbConfigurationOption(newValue);
+            return true;
+        } else if (preference == mBtaConfiguration) {
+            writeBtaConfigurationOption(newValue);
             return true;
         } else if (preference == mWindowAnimationScale) {
             writeAnimationScaleOption(0, mWindowAnimationScale, newValue);
