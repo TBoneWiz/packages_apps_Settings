@@ -26,7 +26,6 @@ import android.app.Dialog;
 import android.app.admin.DevicePolicyManager;
 import android.app.backup.IBackupManager;
 import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothProfile;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.ContentResolver;
@@ -1599,19 +1598,12 @@ public class DevelopmentSettings extends SettingsPreferenceFragment
     }
 
     private void writeBtaConfigurationOption(Object newValue) {
-        BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
-        if (adapter == null || (BluetoothProfile.STATE_CONNECTED !=
-          adapter.getProfileConnectionState(BluetoothProfile.A2DP))) {
-            String currentValue = SystemProperties.get(BTA_ENCODER_PROP);
-            final String value = (newValue != null) ?
-                    newValue.toString() : "0";
-            SystemProperties.set(BTA_ENCODER_PROP, value);
-        } else {
-            pokeSystemProperties();
-            updateBtaConfigurationValues();
-            Toast.makeText(getActivity(),"Disconnect Headset first!",
-              Toast.LENGTH_LONG).show();
-        }
+        String currentValue = SystemProperties.get(BTA_ENCODER_PROP);
+        final String value = (newValue != null) ?
+                newValue.toString() : "0";
+        SystemProperties.set(BTA_ENCODER_PROP, value);
+        pokeSystemProperties();
+        updateBtaConfigurationValues();
     }
 
     private void updateCpuUsageOptions() {
