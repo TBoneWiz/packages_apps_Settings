@@ -206,6 +206,7 @@ public class DevelopmentSettings extends SettingsPreferenceFragment
 
     private static final String BTA_ENCODER_PREF_KEY = "bta_codec_preference_configuration";
     private static final String BTA_ENCODER_PROP = "persist.sys.bt.preferred_codec";
+    private static final String BTA_ACTIVE_ENCODER_PROP = "bluetooth.a2dp_active_codec";
 
     private IWindowManager mWindowManager;
     private IBackupManager mBackupManager;
@@ -1580,9 +1581,26 @@ public class DevelopmentSettings extends SettingsPreferenceFragment
     }
 
     private void updateBtaConfigurationValues() {
-        if (mBtaConfiguration != null) {
+        BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
+        if (mBtaConfiguration != null && adapter != null
+          && (BluetoothProfile.STATE_CONNECTED ==
+          adapter.getProfileConnectionState(BluetoothProfile.A2DP))) {
+            String activeValue = SystemProperties.get(BTA_ACTIVE_ENCODER_PROP);
+            String[] values = getResources().getStringArray(R.array.select_bta_codec_values);
+            String[] titles = getResources().getStringArray(R.array.select_bta_codec_titles);
+            int index = 1;
+            for (int i = 1; i < titles.length; i++) {
+                if (activeValue.equals(values[i])) {
+                    index = i;
+                    break;
+                }
+            }
+            mBtaConfiguration.setValue(values[index]);
+            mBtaConfiguration.setSummary(titles[index]);
+            mBtaConfiguration.setSelectable(false);
+        } else if (mBtaConfiguration != null) {
+            mBtaConfiguration.setSelectable(true);
             String currentValue = SystemProperties.get(BTA_ENCODER_PROP);
-
             String[] values = getResources().getStringArray(R.array.select_bta_codec_values);
             String[] titles = getResources().getStringArray(R.array.select_bta_codec_titles);
             int index = 0;
@@ -1606,8 +1624,6 @@ public class DevelopmentSettings extends SettingsPreferenceFragment
             final String value = (currentValue != null) ?
                     currentValue.toString() : "0";
             SystemProperties.set(BTA_ENCODER_PROP, value);
-            Toast.makeText(getActivity(),"Disconnect Headset first!",
-              Toast.LENGTH_LONG).show();
         } else {
             final String value = (newValue != null) ?
                     newValue.toString() : "0";

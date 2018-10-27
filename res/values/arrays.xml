@@ -1388,7 +1388,7 @@
 
     <!-- BT Encoder names for Developer Settings. -->
     <string-array name="select_bta_codec_titles">
-        <item>Automatic</item>
+        <item>Auto</item>
     </string-array>
 
     <!-- BT Encoder values for Developer Settings. -->
