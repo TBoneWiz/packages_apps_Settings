@@ -1386,15 +1386,24 @@
         <item>2</item>
     </string-array>
 
-    <!-- BT Encoder names for Developer Settings. -->
+    <!-- BT Encoder names for Developer Settings (limit to SBC by default). -->
     <string-array name="select_bta_codec_titles">
         <item>Auto</item>
+        <item>SBC</item>
+        <item>SBC HD</item>
+        <item>SBC HD+</item>
     </string-array>
 
     <!-- BT Encoder values for Developer Settings. -->
     <string-array name="select_bta_codec_values" translatable="false">
         <!-- Do not translate. -->
         <item>0</item>
+        <!-- Do not translate. -->
+        <item>1</item>
+        <!-- Do not translate. -->
+        <item>2</item>
+        <!-- Do not translate. -->
+        <item>3</item>
     </string-array>
 
 </resources>
